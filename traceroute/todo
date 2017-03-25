@@ -1,0 +1,31 @@
+Wykorzystaj fakt, że na podstawie odpowiedzi można zidentyfikować do jakiego pakietu
+należą: komunikaty ICMP echo reply zawierają te same pola identifier i sequence number,
+zaś komunikaty ICMP time exceeded zawierają oryginalny nagłówek IP i 8 bajtów
+oryginalnego pakietu IP (czyli w w przypadku odpowiedzi na ICMP echo request cały
+oryginalny nagłówek ICMP).
+
+
+ICMP time exceeded → zawierają cały oryginalny nagłówek ICMP
+ICMP echo replay → te same pola identifier i sequence number
+
+1. Wyślij 3 pakiety echo request. Zapamiętaj nagłówki ICMP tych pakietów.
+2. Czekaj selectem X sekund. Jeżeli są jakieś pakiety to:
+	- sprawdź czy są to te pakiety, co właśnie wysłałeś
+	- jak tak, to policz czas, stututu
+3. Jeżeli dostałeś echo replay, to koniec
+
+
+30      Received IP packet with ICMP content from: 212.77.98.9
+IP header: 	45 00 00 1c 9f 51 00 00 36 01 c3 4b d4 4d 62 09 c0 a8 2b 45 
+IP data:	00 00 ca f0 18 0f 1d 00 
+			^  ^  ^		^     ^
+			ty 2  id    suma  sekwencyj
+			
+
+
+Bit 0 7		8 15 	16 23	24 31
+	Typ		Kod		Suma kontrolna
+	identyfikator	nr sekwencyjny
+
+Dane (opcjonalne)
+			
