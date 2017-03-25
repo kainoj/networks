@@ -6,7 +6,7 @@ int main() {
 	// Inicjacja
 	PID = getppid();
 	int SEQ = 1;
-
+	
 	int sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
 	if (sockfd < 0) 	{
 		fprintf(stderr, "socket error: %s\n", strerror(errno)); 
@@ -29,14 +29,12 @@ int main() {
 	struct timeval tv; tv.tv_sec = TIMEOUT; tv.tv_usec = 0;
 	int ready;
 
-	for(int ttl = 1; ttl<=TTL; ttl++) {
+	int ttl =42;		//zmien
+	for(int ttl = 1; ttl<=10; ttl++) {
 		printf("Wysyłam %d-ta paczke pakietow\n..", ttl);
 
-		
-		update_icmp_header(icmp_header, PID);
-		
 
-	//	printf("po");
+		update_icmp_header(icmp_header, ttl); // potem zmien - ma byc seq
 		icmp_send(sockfd, icmp_header, "212.77.98.9", ttl);
 		ready = select (sockfd+1, &descriptors, NULL, NULL, &tv);
 
@@ -48,10 +46,8 @@ int main() {
 			printf("TIMEOUT\n");
 		}
 		else {
-			printf("OK");
-
-
-		}
+			printf("%d packets recieved", ready);
+			}
 	}
 	return 0;
 }

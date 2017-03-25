@@ -31,8 +31,8 @@ int main() {
 	struct icmphdr icmp_header;
 	icmp_header.type = ICMP_ECHO;
 	icmp_header.code = 0;
-	icmp_header.un.echo.id = 23;
-	icmp_header.un.echo.sequence = PID;
+	icmp_header.un.echo.id = PID;
+	icmp_header.un.echo.sequence = 0;
 	icmp_header.checksum = 0;
 	icmp_header.checksum = compute_icmp_checksum (
 	(u_int16_t*)&icmp_header, sizeof(icmp_header));	
