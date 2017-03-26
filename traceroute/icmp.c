@@ -28,7 +28,7 @@ void init_icmp_header(struct icmphdr *icmp_header) {
 	icmp_header -> checksum = 0;
 	icmp_header -> checksum = compute_icmp_checksum (
 		(u_int16_t*)icmp_header, sizeof(*icmp_header));	
-	print_icmp_header(icmp_header);
+	//print_icmp_header(icmp_header);
 }
 
 void update_icmp_header(struct icmphdr *icmp_header, u_int16_t echo_seq ) {

@@ -29,3 +29,6 @@ Bit 0 7		8 15 	16 23	24 31
 
 Dane (opcjonalne)
 			
+
+OBSERWCJA
+timeval jest aktualizowane przez select

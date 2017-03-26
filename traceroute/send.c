@@ -1,7 +1,7 @@
 #include "traceroute.h"
 
 
-int icmp_send(int sockfd, struct icmphdr *icmp_header, char * ip_addr, int ttl) {
+void icmp_send(int sockfd, struct icmphdr *icmp_header, char * ip_addr, int ttl) {
 
 	struct sockaddr_in recipient;
 	bzero (&recipient, sizeof(recipient));
@@ -18,6 +18,7 @@ int icmp_send(int sockfd, struct icmphdr *icmp_header, char * ip_addr, int ttl) 
 		 (struct sockaddr*)&recipient,
 		 sizeof(recipient)
 	);
+	if(bytes_sent<0) printf("error????");
 	//printf("Wyslano bajtow:ld\n", bytes_sent);
 }
 
