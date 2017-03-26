@@ -40,9 +40,9 @@ int main() {
 	struct sockaddr_in recipient	;
 	bzero (&recipient, sizeof(recipient));
 	recipient.sin_family = AF_INET;
-	inet_pton(AF_INET, "212.77.98.9", &recipient.sin_addr); // wp.pl
+	inet_pton(AF_INET, "156.17.4.1", &recipient.sin_addr); // ii
 
-	int ttl = 42;
+	int ttl = 2;
 	setsockopt (sockfd, IPPROTO_IP, IP_TTL, &ttl, sizeof(int));
 
 	ssize_t bytes_sent = sendto (

@@ -8,14 +8,14 @@
 #include <errno.h>
 #include <assert.h>
 #include <unistd.h> // PID
+#include <stdbool.h>
 
 #include <netinet/ip_icmp.h>
 #include <netinet/ip.h>
 #include <arpa/inet.h>
 #include <sys/select.h>
 
-
-#define TTL 2
+#define TTL 15
 #define TIMEOUT 3
 #define PACKETS 3
 
@@ -28,6 +28,11 @@ void icmp_send(int sockfd, struct icmphdr *icmp_header, char * ip_addr, int ttl)
 void init_icmp_header(struct icmphdr *icmp_header);
 void update_icmp_header(struct icmphdr *icmp_header, u_int16_t echo_seq );
 
+void print_icmp_header(struct icmphdr *icmp_header);
 
+int receive(int *sockfd, struct icmphdr *senthdrs);
+
+
+bool comparehdrs(struct icmphdr *sent_hdr, u_int8_t *buffer);
 
 #endif

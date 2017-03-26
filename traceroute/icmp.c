@@ -12,11 +12,11 @@ u_int16_t compute_icmp_checksum (const void *buff, int length)
 }
 
 void print_icmp_header(struct icmphdr *icmp_header) {
-	printf("\n> ICMP Header:\n");
+	printf("> ICMP Header:\n");
 	printf("ICMP type: \t%u\n", icmp_header->type);
 	printf("ICMP code: \t%u\n", icmp_header->code);
 	printf("ICMP id (pid): \t%u\n", icmp_header->un.echo.id);
-	printf("ICMP checksum: \t%u\n", icmp_header->checksum);
+	printf("ICMP checksum: \t%x\n", icmp_header->checksum);
 	printf("ICMP sequence: \t%u\n", icmp_header->un.echo.sequence);
 }
 
