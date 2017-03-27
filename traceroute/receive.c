@@ -30,8 +30,8 @@ int receive(int *sockfd, struct icmphdr *senthdrs, reply *replies) {
 		}
 		else if(ready==0) { 
 			printf("todo: TIMEOUT\n");	
-			packets_left=0; 
-			return -1; // -1 stands for timeout
+			is_timeout = true;
+			return packets_received;
 		}
 		else {
 			ssize_t packet_len = recvfrom (*sockfd, buffer, IP_MAXPACKET, 0, (struct sockaddr*)&sender, &sender_len);

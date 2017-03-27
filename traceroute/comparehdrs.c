@@ -40,6 +40,7 @@ bool comparehdrs(struct icmphdr *sent_hdr, u_int8_t *buffer) {
 			if(icmp_hdr -> un.echo.id == sent_hdr[i].un.echo.id
 			   && icmp_hdr -> un.echo.sequence == sent_hdr[i].un.echo.sequence) {
 				//printf(">>>>>>>>>Dostalem echoreply\n");
+				is_echo_reply = true;
 				return true;
 			}
 		}

@@ -2,6 +2,7 @@
 
 int main() {
 	PID = getppid();
+	is_echo_reply = is_timeout = false;
 
 	struct icmphdr icmp_header[PACKETS];
 	reply replies[PACKETS];
@@ -18,7 +19,6 @@ int main() {
 	}
 		
 	for(int ttl = 1; ttl<=TTL; ttl++) {
-		printf("\n> Wysyłam %d-ta paczke pakietow\n", ttl);
 		// Inicjowanie pakietów
 		for(int seq=0; seq<PACKETS; seq++) {
 			update_icmp_header(&icmp_header[seq], 3*ttl+seq-2); // numeracja od 1
@@ -35,6 +35,8 @@ int main() {
 
 		// Wyświetlanie
 		print_response(ttl, packets_received, replies);
+
+		if(is_echo_reply) return 0;
 	}
 	return 0;
 }

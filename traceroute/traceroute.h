@@ -22,6 +22,8 @@
 #define ONEuSEC 1000000 // 1 microsecond
 
 int PID;
+bool is_echo_reply;
+bool is_timeout;
 
 // reply received every iteration
 typedef struct reply {
