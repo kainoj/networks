@@ -1,22 +1,8 @@
 #include "traceroute.h"
 
-void print_as_bytes (unsigned char* buff, ssize_t length) {
-	for (ssize_t i = 0; i < length; i++, buff++)
-		printf ("%.2x ", *buff);	
-}
+int receive(int *sockfd, struct icmphdr *senthdrs, reply *replies) {
+	int packets_received = 0;	
 
-void print_as_bytes_ip_data (unsigned char* buff, ssize_t length) {
-	if(*buff == 0) printf("type: echo replay\n");
-	if(*buff == 11) printf("type: time exceeded\n");
-	print_as_bytes(buff, length);	
-}
-
-
-//////////////////////
-
-
-int receive(int *sockfd, struct icmphdr *senthdrs) {
-	
 	struct sockaddr_in  sender;	
 	socklen_t           sender_len = sizeof(sender);
 	u_int8_t            buffer[IP_MAXPACKET];
@@ -39,12 +25,14 @@ int receive(int *sockfd, struct icmphdr *senthdrs) {
 		ready = select ((*sockfd)+1, &descriptors, NULL, NULL, &tv);
 
 		if(ready < 0) {
-			fprintf(stderr, "select(): error receivning sockets\n"); 
+			fprintf(stderr, "select error: %s\n", strerror(errno)); 
 			return EXIT_FAILURE;	
 		}
 		else if(ready==0) { 
 			printf("todo: TIMEOUT\n");	
-			packets_left=0; }
+			packets_left=0; 
+			return -1; // -1 stands for timeout
+		}
 		else {
 			ssize_t packet_len = recvfrom (*sockfd, buffer, IP_MAXPACKET, 0, (struct sockaddr*)&sender, &sender_len);
 			if (packet_len < 0) {
@@ -52,20 +40,20 @@ int receive(int *sockfd, struct icmphdr *senthdrs) {
 				return EXIT_FAILURE;
 			}
 
-
 			char sender_ip_str[20]; 
 			inet_ntop(AF_INET, &(sender.sin_addr), sender_ip_str, sizeof(sender_ip_str));
 
-			printf ("Received IP packet with ICMP content from: %s\n", sender_ip_str);
+			//printf ("Received IP packet with ICMP content from: %s\n", sender_ip_str);
 
-			////
 			if( comparehdrs(senthdrs, buffer) ) {
-				printf("Dopasowalem naglowek! \n");
+				strcpy(replies[packets_received].ip, sender_ip_str);
+				replies[packets_received].time = ONEuSEC - tv.tv_usec; 
+				packets_received++;
 				packets_left--;
 			}
 
 			
 		}
 	}
-	return 0;
+	return packets_received;
 }

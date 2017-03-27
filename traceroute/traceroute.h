@@ -16,11 +16,19 @@
 #include <sys/select.h>
 
 #define TTL 15
-#define TIMEOUT 3
+#define TIMEOUT 1
 #define PACKETS 3
 
+#define ONEuSEC 1000000 // 1 microsecond
 
 int PID;
+
+// reply received every iteration
+typedef struct reply {
+	long time;
+	char ip[20];
+} reply;
+
 
 u_int16_t compute_icmp_checksum (const void *buff, int length);
 
@@ -30,9 +38,12 @@ void update_icmp_header(struct icmphdr *icmp_header, u_int16_t echo_seq );
 
 void print_icmp_header(struct icmphdr *icmp_header);
 
-int receive(int *sockfd, struct icmphdr *senthdrs);
+int receive(int *sockfd, struct icmphdr *senthdrs, reply *replies);
 
 
 bool comparehdrs(struct icmphdr *sent_hdr, u_int8_t *buffer);
+
+void print_response(int ttl, int packets, reply *replies);
+
 
 #endif
