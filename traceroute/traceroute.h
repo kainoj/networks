@@ -14,12 +14,11 @@
 #include <netinet/ip.h>
 #include <arpa/inet.h>
 #include <sys/select.h>
+#include <sys/time.h> 
 
-#define TTL 15
+#define TTL 30
 #define TIMEOUT 1
 #define PACKETS 3
-
-#define ONEuSEC 1000000 // 1 microsecond
 
 int PID;
 bool is_echo_reply;
@@ -31,6 +30,8 @@ typedef struct reply {
 	char ip[20];
 } reply;
 
+struct timeval send_time;
+struct timeval reci_time;
 
 u_int16_t compute_icmp_checksum (const void *buff, int length);
 
@@ -47,5 +48,8 @@ bool comparehdrs(struct icmphdr *sent_hdr, u_int8_t *buffer);
 
 void print_response(int ttl, int packets, reply *replies);
 
+void Error(char *msg);
+
+bool is_valid_ip_addr(char *ip_addr);
 
 #endif

@@ -6,9 +6,9 @@ void icmp_send(int sockfd, struct icmphdr *icmp_header, char * ip_addr, int ttl)
 	struct sockaddr_in recipient;
 	bzero (&recipient, sizeof(recipient));
 	recipient.sin_family = AF_INET;
-	inet_pton(AF_INET, ip_addr, &recipient.sin_addr); 
+	if(inet_pton(AF_INET, ip_addr, &recipient.sin_addr) <=0 ) Error("inet_pton()");
 	
-	setsockopt (sockfd, IPPROTO_IP, IP_TTL, &ttl, sizeof(int));
+	if(setsockopt (sockfd, IPPROTO_IP, IP_TTL, &ttl, sizeof(int)) < 0) Error("setsockopt()");
 
 	ssize_t bytes_sent = sendto (
 		 sockfd,
@@ -18,7 +18,5 @@ void icmp_send(int sockfd, struct icmphdr *icmp_header, char * ip_addr, int ttl)
 		 (struct sockaddr*)&recipient,
 		 sizeof(recipient)
 	);
-	if(bytes_sent<0) printf("error????");
-	//printf("Wyslano bajtow:ld\n", bytes_sent);
+	if(bytes_sent<0) Error("sendtop()");
 }
-

@@ -37,3 +37,10 @@ void update_icmp_header(struct icmphdr *icmp_header, u_int16_t echo_seq ) {
 	icmp_header -> checksum = compute_icmp_checksum (
 		(u_int16_t*)icmp_header, sizeof(*icmp_header));
 }
+
+
+bool is_valid_ip_addr(char *ip_addr) {
+    struct sockaddr_in s;
+    int res = inet_pton(AF_INET, ip_addr, &(s.sin_addr));
+    return res != 0;
+}
