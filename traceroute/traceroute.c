@@ -1,3 +1,5 @@
+// Przemysław Joniak, 282751
+
 #include "traceroute.h"
 
 int main(int argc, char *argv[]) {
@@ -32,6 +34,7 @@ int main(int argc, char *argv[]) {
 		}
 
 		if( gettimeofday(&send_time, NULL) < 0 ) Error("gettimeofday()");
+		printf("\t\tSend time: %ld\n", send_time.tv_usec);
 		// Odbieranie
 		packets_received = receive(&sockfd, icmp_header, replies);
 

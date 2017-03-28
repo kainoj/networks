@@ -10,6 +10,10 @@ traceroute: $(COBJ)
 
 $(COBJ): $(CSRC)
 	$(CC) $(CFLAGS) -c $*.c -o $@
-	
+
 clean:
 	rm -f *.o
+
+distclean:
+	rm -f *.o
+	rm -f traceroute

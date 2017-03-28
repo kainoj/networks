@@ -1,8 +1,12 @@
+// Przemysław Joniak, 282751
+
 #include "traceroute.h"
 
 void print_response(int ttl, int packets, reply *replies) {
 
-	printf("%d.   ", ttl);
+	if(ttl < 10) printf(" ");
+
+	printf("%d.  ", ttl);
 	if( packets == 0) {
 		printf("*\n");
 		return;
@@ -36,5 +40,5 @@ void print_response(int ttl, int packets, reply *replies) {
 		is_timeout = false;
 	}
 	else 
-		printf("\t%.2f\n", (1.0*mean_time)/(1000.0*packets) );
+		printf("\t%.2f ms\n", (1.0*mean_time)/(1000.0*packets) );
 }	

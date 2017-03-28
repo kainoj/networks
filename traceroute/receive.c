@@ -1,3 +1,5 @@
+// Przemysław Joniak, 282751
+
 #include "traceroute.h"
 
 int receive(int *sockfd, struct icmphdr *senthdrs, reply *replies) {
@@ -42,6 +44,7 @@ int receive(int *sockfd, struct icmphdr *senthdrs, reply *replies) {
 				strcpy(replies[packets_received].ip, sender_ip_str);
 
 				if( gettimeofday(&reci_time, NULL) <0) Error("gettimeofday()");
+				
 				replies[packets_received].time = reci_time.tv_usec - send_time.tv_usec; 
 				if( replies[packets_received].time < 0 ) printf("OPPPPPPPPPPPPPPPPPS\n");
 				packets_received++;

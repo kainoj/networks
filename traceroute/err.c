@@ -1,3 +1,5 @@
+// Przemysław Joniak, 282751
+
 #include "traceroute.h"
 
 void Error(char *msg) {

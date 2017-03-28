@@ -1,3 +1,5 @@
+// Przemysław Joniak, 282751
+
 #include "traceroute.h"
 
 bool compare(struct icmphdr *hdr, struct icmphdr *hdr2) {
