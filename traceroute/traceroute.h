@@ -11,7 +11,6 @@
 #include <assert.h>
 #include <unistd.h> // PID
 #include <stdbool.h>
-
 #include <netinet/ip_icmp.h>
 #include <netinet/ip.h>
 #include <arpa/inet.h>
@@ -28,7 +27,7 @@ bool is_timeout;
 
 // reply received every iteration
 typedef struct reply {
-	long time;
+	float time; // in ms
 	char ip[20];
 } reply;
 
@@ -38,13 +37,14 @@ struct timeval reci_time;
 u_int16_t compute_icmp_checksum (const void *buff, int length);
 
 void icmp_send(int sockfd, struct icmphdr *icmp_header, char * ip_addr, int ttl);
+
 void init_icmp_header(struct icmphdr *icmp_header);
+
 void update_icmp_header(struct icmphdr *icmp_header, u_int16_t echo_seq );
 
 void print_icmp_header(struct icmphdr *icmp_header);
 
 int receive(int *sockfd, struct icmphdr *senthdrs, reply *replies);
-
 
 bool comparehdrs(struct icmphdr *sent_hdr, u_int8_t *buffer);
 

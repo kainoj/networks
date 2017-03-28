@@ -25,16 +25,16 @@ int main(int argc, char *argv[]) {
 	for(int ttl = 1; ttl<=TTL; ttl++) {
 		// Inicjowanie pakietów
 		for(int seq=0; seq<PACKETS; seq++) {
-			update_icmp_header(&icmp_header[seq], 3*ttl+seq-2); // numeracja od 1
+			update_icmp_header(&icmp_header[seq], 3*ttl+seq-2); // numeracja seq od 1
 			replies[seq].time = -1;
 		}
 		// Wysyłanie - 3 pakiety tuż po sobie
 		for(int seq=0; seq<PACKETS; seq++) {
-			icmp_send(sockfd, &icmp_header[seq], argv[1], ttl); // ii
+			icmp_send(sockfd, &icmp_header[seq], argv[1], ttl); 
 		}
-
+		// Pobranie aktualnego czasu
 		if( gettimeofday(&send_time, NULL) < 0 ) Error("gettimeofday()");
-		printf("\t\tSend time: %ld\n", send_time.tv_usec);
+
 		// Odbieranie
 		packets_received = receive(&sockfd, icmp_header, replies);
 

@@ -36,6 +36,8 @@ int receive(int *sockfd, struct icmphdr *senthdrs, reply *replies) {
 		else {
 			ssize_t packet_len = recvfrom (*sockfd, buffer, IP_MAXPACKET, 0, (struct sockaddr*)&sender, &sender_len);
 			if (packet_len < 0) Error("recvfrom");
+
+			if( gettimeofday(&reci_time, NULL) <0) Error("gettimeofday()");
 			
 			char sender_ip_str[20]; 
 			if( inet_ntop(AF_INET, &(sender.sin_addr), sender_ip_str, sizeof(sender_ip_str)) == NULL) Error("inet_ntop()");
@@ -43,10 +45,10 @@ int receive(int *sockfd, struct icmphdr *senthdrs, reply *replies) {
 			if( comparehdrs(senthdrs, buffer) ) {
 				strcpy(replies[packets_received].ip, sender_ip_str);
 
-				if( gettimeofday(&reci_time, NULL) <0) Error("gettimeofday()");
-				
-				replies[packets_received].time = reci_time.tv_usec - send_time.tv_usec; 
-				if( replies[packets_received].time < 0 ) printf("OPPPPPPPPPPPPPPPPPS\n");
+				float elapsed = (reci_time.tv_sec - send_time.tv_sec) * 1000.0; // s -> ms
+				elapsed += (reci_time.tv_usec - send_time.tv_usec) / 1000.0; // us -> ms
+				replies[packets_received].time = elapsed; 
+
 				packets_received++;
 				packets_left--;
 			}			
