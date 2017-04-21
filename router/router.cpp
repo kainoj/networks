@@ -1,37 +1,39 @@
 #include "router.h"
 
-struct dvector {
-	struct in_addr ip;
-	char m_len; // mask length
-	uint32_t dist;
-	bool directly;
-	struct in_addr via;
-} dvector[VECT_SIZE];
+std::vector<neigh> dvct;
 
 
 void readConfig() {
-
 	char cidr[15], tmp[16];
-	int dist;
+	int dist, n;
+	neigh ne;
 	scanf("%d", &n);
 	for(int i=0; i<n; i++) {
 		scanf("%s %s %d", cidr, tmp, &dist);
-
-		dvector.ip = getIp(cidr);
-		//dvector.m_len = ...
-		dvector.dist = dist;
-		dvector.directly = true;
+		ne.ip    = getIp(cidr);
+		ne.m_len = getMaskLen(cidr);
+		ne.dist  = dist;
+		ne.directly = true;
+		dvct.push_back( ne );
 	}
 }
 
-void printVector() {
 
-	
+void printDistVecotr() {
+	for(size_t i=0; i<dvct.size(); i++) {
+		printf("%s/%d\t", inet_ntoa(dvct[i].ip), dvct[i].m_len );
+		printf("distance %u\t", dvct[i].dist);
+		if(dvct[i].directly)
+			printf("connected directly\n");
+		else
+			printf("via %s\n", inet_ntoa(dvct[i].via));
+	}
 }
 
 
 int main() {
-
+	readConfig();
+	printDistVecotr();
 	//printf("s = %lu\n", sizeof(dvector));
 
 	

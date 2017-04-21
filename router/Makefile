@@ -1,15 +1,15 @@
-CC=gcc
-CFLAGS=-std=c99 -Wall -Wextra
+CC=g++
+CFLAGS=-Wall -Wextra
 
-CSRC=utilities.c router.c
+CSRC=utilities.cpp router.cpp
 
-COBJ=$(CSRC:.c=.o)
+COBJ=$(CSRC:.cpp=.o)
 
 router: $(COBJ)
 	$(CC) $(CFLAGS) $? -o $@
 
 $(COBJ): $(CSRC)
-	$(CC) $(CFLAGS) -c $*.c -o $@
+	$(CC) $(CFLAGS) -c $*.cpp -o $@
 
 clean:
 	rm -f *.o
