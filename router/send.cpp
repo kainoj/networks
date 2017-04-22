@@ -2,8 +2,6 @@
 
 #include "router.h"
 
-
-
 void send() {
 	for(size_t i=0; i<dvct.size(); i++) {
 		for(size_t j=0; j<brdcsts.size(); j++) {

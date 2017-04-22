@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-std=c++11 -Wall -Wextra
 
-CSRC=utils_ip.cpp utils_io.cpp router.cpp send.cpp	
+CSRC=utils_ip.cpp utils_io.cpp router.cpp send.cpp receive.cpp
 
 COBJ=$(CSRC:.cpp=.o)
 

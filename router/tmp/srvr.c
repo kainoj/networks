@@ -8,8 +8,8 @@
 
 int main()
 {
-	int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-	if (sockfd < 0) {
+	int sockfdrcv = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sockfdrcv < 0) {
 		fprintf(stderr, "socket error: %s\n", strerror(errno)); 
 		return EXIT_FAILURE;
 	}
@@ -19,7 +19,7 @@ int main()
 	server_address.sin_family      = AF_INET;
 	server_address.sin_port        = htons(12345);
 	server_address.sin_addr.s_addr = htonl(INADDR_ANY);
-	if (bind (sockfd, (struct sockaddr*)&server_address, sizeof(server_address)) < 0) {
+	if (bind (sockfdrcv, (struct sockaddr*)&server_address, sizeof(server_address)) < 0) {
 		fprintf(stderr, "bind error: %s\n", strerror(errno)); 
 		return EXIT_FAILURE;
 	}
@@ -30,7 +30,7 @@ int main()
 		socklen_t 			sender_len = sizeof(sender);
 		u_int8_t 			buffer[IP_MAXPACKET+1];
 
-		ssize_t datagram_len = recvfrom (sockfd, buffer, IP_MAXPACKET, 0, (struct sockaddr*)&sender, &sender_len);
+		ssize_t datagram_len = recvfrom (sockfdrcv, buffer, IP_MAXPACKET, 0, (struct sockaddr*)&sender, &sender_len);
 		if (datagram_len < 0) {
 			fprintf(stderr, "recvfrom error: %s\n", strerror(errno)); 
 			return EXIT_FAILURE;
@@ -45,7 +45,7 @@ int main()
 		
 		char* reply = "Thank you!";
 		ssize_t reply_len = strlen(reply);
-		if (sendto(sockfd, reply, reply_len, 0, (struct sockaddr*)&sender, sender_len) != reply_len) {
+		if (sendto(sockfdrcv, reply, reply_len, 0, (struct sockaddr*)&sender, sender_len) != reply_len) {
 			fprintf(stderr, "sendto error: %s\n", strerror(errno)); 
 			return EXIT_FAILURE;		
 		}
@@ -53,6 +53,6 @@ int main()
 		fflush(stdout);
 	}
 
-	close (sockfd);
+	close (sockfdrcv);
 	return EXIT_SUCCESS;
 }

@@ -4,11 +4,32 @@
 
 std::vector<neigh> dvct;
 std::vector<struct in_addr> brdcsts;
+struct timeval last_round;
+int sockfd_rcv;
+struct sockaddr_in srvr_adrs;
 
 int main() {
+	initTimer();
+	initRcvSock();
 	readConfig();
+
 	printDistVecotr();	
-	send();
+	while(1) {
+		
+		//if(isNextRound()) {
+			//send();
+			printf("bam!\n");
+		//}
+		receive();
+
+	}
+	
+	close (sockfd_rcv);
+	return 0;
+}
+
+
+
 /*  
 	//char cidr[] = "192.168.1.34/24";	
 	struct in_addr ip, mask, brdcst;
@@ -19,5 +40,3 @@ int main() {
 	printf("mask=(%s)\n", inet_ntoa(mask) );
 	printf("brdcs=(%s)\n",inet_ntoa(brdcst));
 */
-	return 0;
-}
