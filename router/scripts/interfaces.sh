@@ -1,4 +1,5 @@
 #!/bin/bash
+
 interface1="enp0s3"
 interface2="enp0s8"
 

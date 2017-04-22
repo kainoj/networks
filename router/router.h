@@ -9,12 +9,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
-
 #include <arpa/inet.h>
 #include <netinet/ip.h>
 #include <errno.h>
 
-#define VECT_SIZE 32
 #define ROUND_LEN 3 // sec
 
 #pragma pack(1)	// prevents from struct alignment
@@ -32,8 +30,10 @@ typedef struct neigh {
 	struct in_addr via;
 } neigh;
 
+extern int n;	// first n entries are my neighbours
 extern std::vector<neigh> dvct;
 extern std::vector<struct in_addr> brdcsts;
+extern std::vector<struct in_addr> my_neighs;
 extern struct timeval last_round;
 extern int sockfd_rcv;
 extern struct sockaddr_in srvr_adrs;
@@ -42,8 +42,6 @@ extern struct sockaddr_in srvr_adrs;
 void readConfig();
 void printDistVecotr();
 void printDistVectElem(size_t i);
-void initTimer();
-bool isNextRound();
 void Error(const char *msg); // error wrapper
 
 // utils_ip.h
@@ -56,10 +54,8 @@ bool Sendto(size_t i, size_t j); // true if a i-th packet was sent
                                  // to j-th broadcast address successfully
 void send();                     // sends the whole vector
 
-
 // receive.h
 void initRcvSock();
 void receive();
-
 
 #endif

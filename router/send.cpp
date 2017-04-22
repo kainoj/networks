@@ -5,16 +5,12 @@
 void send() {
 	for(size_t i=0; i<dvct.size(); i++) {
 		for(size_t j=0; j<brdcsts.size(); j++) {
-			if( Sendto(i, j) ) {
-				printf("sent successfully\n");
-			}
-			else {
+			if( Sendto(i, j) == false ) {
 				printf("ops, sth went wrong\n");
 			}
 		}
 	}
 }
-
 
 bool Sendto(size_t i, size_t j) {
 	int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -34,9 +30,12 @@ bool Sendto(size_t i, size_t j) {
 					(void *)&broadcastPermission,
 					sizeof(broadcastPermission));
 
-	//char* message = "Hello server!";
+	// Adjust data to network byte order
 	ssize_t msg_len = sizeof(dvct[i].info), res;
-	res = sendto(sockfd, &dvct[i].info, msg_len, 0, (struct sockaddr*) &server_address, sizeof(server_address));
+	neigh_info msg = dvct[i].info;
+	msg.dist = htonl(msg.dist); 
+
+	res = sendto(sockfd, &msg, msg_len, 0, (struct sockaddr*) &server_address, sizeof(server_address));
 	close (sockfd);
 	return res == msg_len;
 }

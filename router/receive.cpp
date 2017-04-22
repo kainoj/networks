@@ -24,34 +24,39 @@ void receive() {
 
 	struct sockaddr_in 	sender;	
 	socklen_t 			sender_len = sizeof(sender);
-	u_int8_t 			buffer[IP_MAXPACKET+1];
 	
 	fd_set descriptors;
 	FD_ZERO (&descriptors);
 	FD_SET (sockfd_rcv, &descriptors);
 	struct timeval tv = { ROUND_LEN, 0 };
-
-	ready = select(sockfd_rcv+1, &descriptors, NULL, NULL, &tv);
-	if(ready < 0) Error("select()");
-	if(ready == 0) return;
-
-	
-
-	ssize_t datagram_len = recvfrom (sockfd_rcv, buffer, IP_MAXPACKET, 0, (struct sockaddr*)&sender, &sender_len);
-	if (datagram_len < 0) Error("recvfrom()"); 
-
+	ssize_t datagram_len;
 	char sender_ip_str[20]; 
-	inet_ntop(AF_INET, &(sender.sin_addr), sender_ip_str, sizeof(sender_ip_str));
-	printf ("Received UDP packet from IP address: %s, port: %d\n", sender_ip_str, ntohs(sender.sin_port));
+	neigh_info msg;
 
-	buffer[datagram_len] = 0;
-	printf("%ld-byte message: +%s+\n", datagram_len, buffer);
-	
-	char* reply = "Thank you!";
-	ssize_t reply_len = strlen(reply);
-	if (sendto(sockfd_rcv, reply, reply_len, 0, (struct sockaddr*)&sender, sender_len) != reply_len) {
-		Error("sendto()");		
-	}
+	do {
+		ready = select(sockfd_rcv+1, &descriptors, NULL, NULL, &tv);
+		if(ready < 0) Error("select()");
+		if(ready == 0) return;
 
-	fflush(stdout);
+		// Receive UDP packet
+		datagram_len = recvfrom (sockfd_rcv, &msg, IP_MAXPACKET, 0, (struct sockaddr*)&sender, &sender_len);
+		if (datagram_len < 0) Error("recvfrom()"); 
+
+		// Check if it's not a packet sent by me
+		bool isPacketMine = false;
+		for(size_t i=0; i<my_neighs.size(); i++) {
+			isPacketMine |= (my_neighs[i].s_addr == sender.sin_addr.s_addr);
+		}
+		if(isPacketMine) continue;
+		
+		inet_ntop(AF_INET, &(sender.sin_addr), sender_ip_str, sizeof(sender_ip_str));
+		msg.dist = ntohl(msg.dist);
+
+		printf ("Received UDP packet from IP address: %s, port: %d\n", sender_ip_str, ntohs(sender.sin_port));
+		printf("%ld-byte message\n", datagram_len);
+		printf("%s/%d\t", inet_ntoa(msg.ip), msg.m_len);
+		printf("distance %u\n", msg.dist);
+	} 
+	while(tv.tv_sec != 0 || tv.tv_usec != 0);
+//		fflush(stdout);
 }
