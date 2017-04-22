@@ -1,14 +1,14 @@
 CC=g++
-CFLAGS=-Wall -Wextra
+CFLAGS=-std=c++11 -Wall -Wextra
 
-CSRC=utilities.cpp router.cpp
+CSRC=utils_ip.cpp utils_io.cpp router.cpp send.cpp	
 
 COBJ=$(CSRC:.cpp=.o)
 
-router: $(COBJ)
+router: $(COBJ) router.h
 	$(CC) $(CFLAGS) $? -o $@
 
-$(COBJ): $(CSRC)
+$(COBJ): $(CSRC) router.h
 	$(CC) $(CFLAGS) -c $*.cpp -o $@
 
 clean:

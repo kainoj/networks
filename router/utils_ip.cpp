@@ -1,3 +1,5 @@
+// Przemysław Joniak, 282751
+
 #include "router.h"
 
 struct in_addr getIp(char cidr[]) {	
@@ -16,7 +18,7 @@ struct in_addr getIp(char cidr[]) {
 }
 
 char getMaskLen(char cidr[]) {
-	// Extract mask length form CIDR
+	// Extract mask length foarm CIDR
 	size_t len = strlen(cidr);
 	if(cidr[len-3] == '/')
 		return  10*(cidr[len-2]-'0') + cidr[len-1]-'0';
