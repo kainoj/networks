@@ -4,7 +4,7 @@
 
 void send() {
 	for(size_t i=0; i<dvct.size(); i++) {
-		for(size_t j=0; j<brdcsts.size(); j++) {
+		for(size_t j=0; j<neigh_nets.size(); j++) {
 			if( Sendto(i, j) == false ) {
 				printf("ops, sth went wrong\n");
 			}
@@ -15,15 +15,15 @@ void send() {
 bool Sendto(size_t i, size_t j) {
 	int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sockfd < 0) {
-		fprintf(stderr, "socket error: %s\n", strerror(errno)); 
+		fprintf(stderr, "socket error: %s\n", strerror(errno));
 		exit(1); //return EXIT_FAILURE;
 	}
 
 	struct sockaddr_in server_address;
 	bzero (&server_address, sizeof(server_address));
 	server_address.sin_family      = AF_INET;
-	server_address.sin_port        = htons(12345);
-	inet_pton(AF_INET, inet_ntoa(brdcsts[j]), &server_address.sin_addr);
+	server_address.sin_port        = htons(PORT);
+	inet_pton(AF_INET, inet_ntoa(neigh_nets[j].ip), &server_address.sin_addr);
 
 	int broadcastPermission = 1;
 	setsockopt (sockfd, SOL_SOCKET, SO_BROADCAST,
@@ -33,7 +33,7 @@ bool Sendto(size_t i, size_t j) {
 	// Adjust data to network byte order
 	ssize_t msg_len = sizeof(dvct[i].info), res;
 	neigh_info msg = dvct[i].info;
-	msg.dist = htonl(msg.dist); 
+	msg.dist = htonl(msg.dist);
 
 	res = sendto(sockfd, &msg, msg_len, 0, (struct sockaddr*) &server_address, sizeof(server_address));
 	close (sockfd);

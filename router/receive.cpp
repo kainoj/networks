@@ -11,7 +11,7 @@ void initRcvSock() {
 	
 	bzero (&srvr_adrs, sizeof(srvr_adrs));
 	srvr_adrs.sin_family      = AF_INET;
-	srvr_adrs.sin_port        = htons(12345);
+	srvr_adrs.sin_port        = htons(PORT);
 	srvr_adrs.sin_addr.s_addr = htonl(INADDR_ANY);
 	if(bind (sockfd_rcv, (struct sockaddr*)&srvr_adrs, sizeof(srvr_adrs)) < 0) {
 		fprintf(stderr, "bind error: %s\n", strerror(errno)); 
@@ -23,7 +23,7 @@ void receive() {
 	int ready = 0;
 
 	struct sockaddr_in 	sender;	
-	socklen_t 			sender_len = sizeof(sender);
+	socklen_t           sender_len = sizeof(sender);
 	
 	fd_set descriptors;
 	FD_ZERO (&descriptors);
@@ -52,10 +52,11 @@ void receive() {
 		inet_ntop(AF_INET, &(sender.sin_addr), sender_ip_str, sizeof(sender_ip_str));
 		msg.dist = ntohl(msg.dist);
 
-		printf ("Received UDP packet from IP address: %s, port: %d\n", sender_ip_str, ntohs(sender.sin_port));
+		printf("Received UDP packet from IP address: %s, port: %d\n", sender_ip_str, ntohs(sender.sin_port));
 		printf("%ld-byte message\n", datagram_len);
 		printf("%s/%d\t", inet_ntoa(msg.ip), msg.m_len);
 		printf("distance %u\n", msg.dist);
+		update(msg, getNetAddress(sender.sin_addr));
 	} 
 	while(tv.tv_sec != 0 || tv.tv_usec != 0);
 //		fflush(stdout);

@@ -4,9 +4,8 @@
 
 int n;
 std::vector<neigh> dvct;
-std::vector<struct in_addr> brdcsts;
+std::vector<neigh_info> neigh_nets;
 std::vector<struct in_addr> my_neighs;
-struct timeval last_round;
 int sockfd_rcv;
 struct sockaddr_in srvr_adrs;
 
@@ -17,7 +16,7 @@ int main() {
 	while(1) {
 		printDistVecotr();
 		send();
-		receive();
+		receive(); // and update vector
 	}
 	close(sockfd_rcv);
 	return 0;
