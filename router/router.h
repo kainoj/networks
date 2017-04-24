@@ -16,8 +16,9 @@
 #define ROUND_LEN 4     // [sec]
 #define INF 4294967295U // 2^32 - 1
 #define PORT 54321
-#define NEIGH_LIFETM 2 // [#rounds]. Tells how long should I display info
-                       // about neighbours that are not responding
+#define NEIGH_LIFETM 2  // [#rounds]. Tells how long should I display info
+                        // about neighbours that are not responding
+#define INF_LIFETM 2    // [#rounds]
 
                         // All data but IPs are stored in host byte order
 #pragma pack(1)         // Data to be sent/received

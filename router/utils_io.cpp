@@ -22,7 +22,12 @@ void readConfig() {
 void printDistVecotr() {
 	for(size_t i=0; i<dvct.size(); i++) {
 		printf("%s/%d\t", inet_ntoa(dvct[i].info.ip), dvct[i].info.m_len );
-		printf("%s %u\t", dvct[i].reachable? "distance" : "unreachable", dvct[i].info.dist);
+		if( dvct[i].reachable ) {
+			if(dvct[i].info.dist < INF)
+				printf("distance %u\t", dvct[i].info.dist);
+			else printf("distance INF\t");
+		}
+		else printf("unreachable\t");
 		if(dvct[i].directly)
 			printf("connected directly\n");
 		else
@@ -44,7 +49,19 @@ void chechUnreachability() {
 		//printf("%s -- %d   left\n", inet_ntoa(dvct[i].info.ip), neigh_nets_cutdown[i]);
 		if( neigh_nets_cutdown[i]-- <= 0) {
 			dvct[i].reachable = false;
-		//	printf("%s became unreachable\n", inet_ntoa(dvct[i].info.ip) );
+			// Search the vector for connections through unreachable net
+			struct in_addr unrchbl_net = getNetAddress(dvct[i].info.ip, dvct[i].info.m_len);
+			//printf("%s jest nieosiagalna!! kolejne via: \n", inet_ntoa(unrchbl_net) );
+			for(size_t j=0; j<dvct.size(); j++) {
+				//printf("> %s\n", inet_ntoa(  getNetAddress(dvct[j].via, dvct[j].info.m_len) )) ;
+				if( unrchbl_net.s_addr == getNetAddress(dvct[j].via, dvct[j].info.m_len).s_addr  ) {
+					dvct[j].info.dist = INF;
+					//printf("bang\n");
+				}
+			}
+		}
+		else {
+			dvct[i].reachable = true;
 		}
 	}
 }

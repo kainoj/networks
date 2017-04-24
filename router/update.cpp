@@ -11,11 +11,16 @@ void update(neigh_info msg, struct in_addr via_net) {
 
 	for(size_t i=0; i<dvct.size(); i++) {
 		if (dvct[i].info.ip.s_addr == msg.ip.s_addr) {
-			if( dvct[i].info.dist > msg.dist + dist_to_sender) {
+			if( msg.dist == INF ) {
+				dvct[i].info = msg;
+				dvct[i].via  = via_net;
+			}
+			else if( dvct[i].info.dist > msg.dist + dist_to_sender) {
 				dvct[i].info = msg;
 				dvct[i].info.dist += dist_to_sender;
 				dvct[i].via  = via_net;
 			}
+
 			return;
 		}
 	}
