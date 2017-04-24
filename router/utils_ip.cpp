@@ -27,12 +27,14 @@ char getMaskLen(char cidr[]) {
 
 struct in_addr getBroadcast(struct in_addr ip, char mask_len) {
 	struct in_addr brdcst;
-	brdcst.s_addr =  ip.s_addr | ~((1 << mask_len)-1);
+	uint32_t mask = htonl(~((1 << (32-mask_len))-1));
+	brdcst.s_addr =  ip.s_addr | ~mask;
 	return brdcst;
 }
 
 struct in_addr getNetAddress(struct in_addr ip, char mask_len) {
 	struct in_addr net_addr;
-	net_addr.s_addr = ip.s_addr & ((1 << mask_len)-1);
+	uint32_t mask = htonl(~((1 << (32-mask_len))-1));
+	net_addr.s_addr =  ip.s_addr & mask;
 	return net_addr;
 }

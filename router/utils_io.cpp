@@ -41,10 +41,10 @@ void chechUnreachability() {
 
 	// Decrement lifetime cutdown
 	for(size_t i=0; i<neigh_nets_cutdown.size(); i++){
-		printf("%s -- %d   left\n", inet_ntoa(dvct[i].info.ip), neigh_nets_cutdown[i]);
+		//printf("%s -- %d   left\n", inet_ntoa(dvct[i].info.ip), neigh_nets_cutdown[i]);
 		if( neigh_nets_cutdown[i]-- <= 0) {
 			dvct[i].reachable = false;
-			printf("%s became unreachable\n", inet_ntoa(dvct[i].info.ip) );
+		//	printf("%s became unreachable\n", inet_ntoa(dvct[i].info.ip) );
 		}
 	}
 }
