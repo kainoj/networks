@@ -8,14 +8,12 @@ void update(neigh_info msg, struct in_addr via_net) {
 			dist_to_sender = neigh_nets[i].dist;
 		}
 	}
-	//printf("wysylajacy: %s\n", inet_ntoa(via_net) );
-	//printf("odleglosc do wysylajacego: %u\n", dist_to_sender);
 
 	for(size_t i=0; i<dvct.size(); i++) {
 		if (dvct[i].info.ip.s_addr == msg.ip.s_addr) {
-			//printf("Znalazlem taki sam\n");
 			if( dvct[i].info.dist > msg.dist + dist_to_sender) {
 				dvct[i].info = msg;
+				dvct[i].info.dist += dist_to_sender;
 				dvct[i].via  = via_net;
 			}
 			return;
@@ -29,5 +27,4 @@ void update(neigh_info msg, struct in_addr via_net) {
 	new_neigh.reachable = true;
 	new_neigh.via       = via_net;
 	dvct.push_back(new_neigh);
-
 }

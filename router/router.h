@@ -16,6 +16,8 @@
 #define ROUND_LEN 4     // [sec]
 #define INF 4294967295U // 2^32 - 1
 #define PORT 54321
+#define NEIGH_LIFETM 2 // [#rounds]. Tells how long should I display info
+                       // about neighbours that are not responding
 
                         // All data but IPs are stored in host byte order
 #pragma pack(1)         // Data to be sent/received
@@ -38,8 +40,9 @@ extern int n;           // First n entries are my neighbours
 extern std::vector<neigh> dvct;               // Distance vector
 extern std::vector<neigh_info> neigh_nets;    // Nets I'm directly connected with
                                               // IP = host IP, net address to be computed!!!
-extern std::vector<struct in_addr> my_neighs; // My IP addresses 
-                                              //  ^probably i won't need it anymore
+extern std::vector<int> neigh_nets_cutdown;   // 1. On receival set it to NEIGH_LIFETM
+                                              // 2. Decrease at the end of a round
+                                              // 3. Net unreachable <=> neigh_nets_cutdown=0
 extern int sockfd_rcv;
 extern struct sockaddr_in srvr_adrs;
 
@@ -47,6 +50,7 @@ extern struct sockaddr_in srvr_adrs;
 void readConfig();
 void printDistVecotr();
 void Error(const char *msg);     // Error wrapper
+void chechUnreachability();
 
 // utils_ip.h
 struct in_addr getIp(char cidr[]);

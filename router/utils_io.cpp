@@ -15,12 +15,11 @@ void readConfig() {
 		ne.directly = ne.reachable = true;
 		dvct.push_back( ne );
 		neigh_nets.push_back( {getIp(cidr), getMaskLen(cidr), dist} );
-		my_neighs.push_back( getIp(cidr) );
+		neigh_nets_cutdown.push_back( NEIGH_LIFETM );
 	}
 }
-
+ 
 void printDistVecotr() {
-	
 	for(size_t i=0; i<dvct.size(); i++) {
 		printf("%s/%d\t", inet_ntoa(dvct[i].info.ip), dvct[i].info.m_len );
 		printf("%s %u\t", dvct[i].reachable? "distance" : "unreachable", dvct[i].info.dist);
@@ -35,4 +34,17 @@ void printDistVecotr() {
 void Error(const char *msg) {
 	fprintf(stderr, "%s: %s\n", msg, strerror(errno)); 
 	exit(EXIT_FAILURE);
+}
+
+
+void chechUnreachability() {
+
+	// Decrement lifetime cutdown
+	for(size_t i=0; i<neigh_nets_cutdown.size(); i++){
+		printf("%s -- %d   left\n", inet_ntoa(dvct[i].info.ip), neigh_nets_cutdown[i]);
+		if( neigh_nets_cutdown[i]-- <= 0) {
+			dvct[i].reachable = false;
+			printf("%s became unreachable\n", inet_ntoa(dvct[i].info.ip) );
+		}
+	}
 }

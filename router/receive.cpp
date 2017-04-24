@@ -42,37 +42,39 @@ void receive() {
 		datagram_len = recvfrom (sockfd_rcv, &msg, IP_MAXPACKET, 0, (struct sockaddr*)&sender, &sender_len);
 		if (datagram_len < 0) Error("recvfrom()"); 
 
+
 		// Loop through directly connected networks
 		// and match sender IP with a mask length
 		char m_len;
 		for(size_t i=0; i<neigh_nets.size(); i++) {
 			if(sender.sin_addr.s_addr == neigh_nets[i].ip.s_addr) {
 				m_len = neigh_nets[i].m_len;
+				//neigh_nets_cutdown[i] = NEIGH_LIFETM;
 				break;
 			}
 		}
 
-
 		// And check if a received packet wasn't sent by me
 		bool isPacketMine = false;
 		for(size_t i=0; i<neigh_nets.size(); i++) {
-			isPacketMine |= (neigh_nets[i].ip.s_addr == sender.sin_addr.s_addr);
+			if( neigh_nets[i].ip.s_addr == sender.sin_addr.s_addr ) {
+				isPacketMine = true;
+			}
 		}
 		if(isPacketMine) continue;
-		
+
+	
 		inet_ntop(AF_INET, &(sender.sin_addr), sender_ip_str, sizeof(sender_ip_str));
 		msg.dist = ntohl(msg.dist);
+		update(msg, getNetAddress(sender.sin_addr, m_len));
 
-
-/*
+		/*
 		printf("Received UDP packet from IP address: %s, port: %d\n", sender_ip_str, ntohs(sender.sin_port));
 		printf("%ld-byte message\t", datagram_len);
 		printf("%s/%d\t", inet_ntoa(msg.ip), msg.m_len);
 		printf("distance %u\t", msg.dist);
 		printf("mask len: %d\n", (int)m_len );
-*/
-
-		update(msg, getNetAddress(sender.sin_addr, m_len));
+	*/
 
 	} 
 	while(tv.tv_sec != 0 || tv.tv_usec != 0);
