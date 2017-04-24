@@ -23,7 +23,7 @@ bool Sendto(size_t i, size_t j) {
 	bzero (&server_address, sizeof(server_address));
 	server_address.sin_family      = AF_INET;
 	server_address.sin_port        = htons(PORT);
-	inet_pton(AF_INET, inet_ntoa(neigh_nets[j].ip), &server_address.sin_addr);
+	inet_pton(AF_INET, inet_ntoa(getBroadcast(neigh_nets[j].ip, neigh_nets[j].m_len)), &server_address.sin_addr);
 
 	int broadcastPermission = 1;
 	setsockopt (sockfd, SOL_SOCKET, SO_BROADCAST,

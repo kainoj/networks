@@ -29,7 +29,7 @@ fi
 
 if [ $1 = 3 ]; then
 	a1_ip=$host2net2
-	a2_ip=$host0gnet3
+	a2_ip=$host0net3
 fi
 
 ping $a1_ip -c1

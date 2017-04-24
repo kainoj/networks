@@ -13,14 +13,14 @@
 #include <netinet/ip.h>
 #include <errno.h>
 
-#define ROUND_LEN 7     // [sec]
+#define ROUND_LEN 4     // [sec]
 #define INF 4294967295U // 2^32 - 1
 #define PORT 54321
 
                         // All data but IPs are stored in host byte order
 #pragma pack(1)         // Data to be sent/received
 typedef struct neigh_info {
-	struct in_addr ip;	// IP of a {NETWORK | BROADCAST}
+	struct in_addr ip;  // IP of a {NETWORK | BROADCAST}
 	char m_len;         // Net mask length
 	uint32_t dist;      // Distance to the network
 } neigh_info;           
@@ -29,22 +29,24 @@ typedef struct neigh_info {
 typedef struct neigh {  // Full single entry in a distance vector
 	neigh_info info;    // Core info of the entry
 	bool directly;      // True iff net is connected directly
-	bool reachable;		// True iff net is reachable
+	bool reachable;     // True iff net is reachable
 	struct in_addr via; // Set iff net is not connected directly;
 	                    // IP address of the first net on the way
 } neigh;
 
-extern int n;	        // First n entries are my neighbours
+extern int n;           // First n entries are my neighbours
 extern std::vector<neigh> dvct;               // Distance vector
 extern std::vector<neigh_info> neigh_nets;    // Nets I'm directly connected with
+                                              // IP = host IP, net address to be computed!!!
 extern std::vector<struct in_addr> my_neighs; // My IP addresses 
+                                              //  ^probably i won't need it anymore
 extern int sockfd_rcv;
 extern struct sockaddr_in srvr_adrs;
 
 // utils_io.h
 void readConfig();
 void printDistVecotr();
-void Error(const char *msg);     // error wrapper
+void Error(const char *msg);     // Error wrapper
 
 // utils_ip.h
 struct in_addr getIp(char cidr[]);

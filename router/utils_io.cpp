@@ -4,7 +4,7 @@
 
 void readConfig() {
 	char cidr[15], tmp[16];
-	int dist;
+	uint32_t dist;
 	neigh ne;
 	scanf("%d", &n);
 	for(int i=0; i<n; i++) {
@@ -14,13 +14,13 @@ void readConfig() {
 		ne.info.dist  = dist;
 		ne.directly = ne.reachable = true;
 		dvct.push_back( ne );
-		neigh_nets.push_back( ne.info );
-		my_neighs.push_back( ne.info.ip );
+		neigh_nets.push_back( {getIp(cidr), getMaskLen(cidr), dist} );
+		my_neighs.push_back( getIp(cidr) );
 	}
 }
 
 void printDistVecotr() {
-	printf("\n################\n");
+	
 	for(size_t i=0; i<dvct.size(); i++) {
 		printf("%s/%d\t", inet_ntoa(dvct[i].info.ip), dvct[i].info.m_len );
 		printf("%s %u\t", dvct[i].reachable? "distance" : "unreachable", dvct[i].info.dist);
@@ -29,7 +29,7 @@ void printDistVecotr() {
 		else
 			printf("via %s\n", inet_ntoa(dvct[i].via));	
 	}
-	printf("#################\n");
+	printf("\n");
 }
 
 void Error(const char *msg) {
