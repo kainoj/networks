@@ -71,14 +71,13 @@ void receive() {
 		msg.m_len = m_len;
 		update(msg, getNetAddress(sender.sin_addr, m_len));
 
-	
-	/*
-		printf("Received UDP packet from IP address: >%s<, port: %d\n", sender_ip_str, ntohs(sender.sin_port));
-		printf("%ld-byte message\t", datagram_len);
+		
+		/*printf("Received UDP packet from IP address: >%s/%d<, port: %d\n", sender_ip_str, m_len, ntohs(sender.sin_port));
 		printf("%s/%d\t", inet_ntoa(msg.ip), msg.m_len);
-		printf("distance %u\t", msg.dist);
-		printf("mask len: %d\n", (int)m_len );
-		printf("---------------------------------------\n");
+		printf("d = %u\t", msg.dist);
+	 	//printf("%ld-byte message\t", datagram_len);
+		//printf("mask len: %d\n", (int)m_len );
+		printf("\n---------------------------------------\n");
 	*/
 	
 	} 

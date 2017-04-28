@@ -12,7 +12,8 @@ void readConfig() {
 		ne.info.ip    = getNetAddress(getIp(cidr), getMaskLen(cidr));
 		ne.info.m_len = getMaskLen(cidr);
 		ne.info.dist  = dist;
-		ne.directly = ne.reachable = true;
+		ne.directly   = ne.reachable = true;
+		ne.inf_cntr   = INF_LIFETM;
 		dvct.push_back( ne );
 		neigh_nets.push_back( {getIp(cidr), getMaskLen(cidr), dist} );
 		neigh_nets_cutdown.push_back( NEIGH_LIFETM );
@@ -62,6 +63,17 @@ void chechUnreachability() {
 		}
 		else {
 			dvct[i].reachable = true;
+		}
+	}
+
+	// deal with infinities
+	for(size_t i=0; i<dvct.size(); i++) {
+		if(dvct[i].directly == false && dvct[i].info.dist == INF) {
+			if( dvct[i].inf_cntr-- <=0 ) {
+				//printf("remove entry!!1\n");
+				dvct.erase(dvct.begin()+i);
+				i--;
+			}
 		}
 	}
 }

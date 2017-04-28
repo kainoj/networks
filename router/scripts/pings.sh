@@ -34,5 +34,4 @@ fi
 
 ping $a1_ip -c1
 echo "#####"
-echo "#####"
 ping $a2_ip -c1

@@ -13,7 +13,7 @@
 #include <netinet/ip.h>
 #include <errno.h>
 
-#define ROUND_LEN 4     // [sec]
+#define ROUND_LEN 10     // [sec]
 #define INF 4294967295U // 2^32 - 1
 #define PORT 54321
 #define NEIGH_LIFETM 2  // [#rounds]. Tells how long should I display info
@@ -35,6 +35,7 @@ typedef struct neigh {  // Full single entry in a distance vector
 	bool reachable;     // True iff net is reachable
 	struct in_addr via; // Set iff net is not connected directly;
 	                    // IP address of the first net on the way
+	int inf_cntr;
 } neigh;
 
 extern int n;           // First n entries are my neighbours

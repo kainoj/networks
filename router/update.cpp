@@ -12,15 +12,18 @@ void update(neigh_info msg, struct in_addr via_net) {
 	for(size_t i=0; i<dvct.size(); i++) {
 		if (dvct[i].info.ip.s_addr == msg.ip.s_addr) {
 			if( msg.dist == INF ) {
-				dvct[i].info = msg;
-				dvct[i].via  = via_net;
+				if( getNetAddress(dvct[i].via, dvct[i].info.m_len).s_addr == via_net.s_addr) {
+					//printf("inf! via = %s -- ");
+					dvct[i].info = msg;
+					dvct[i].via  = via_net;
+				}
 			}
 			else if( dvct[i].info.dist > msg.dist + dist_to_sender) {
-				dvct[i].info = msg;
+				dvct[i].info       = msg;
 				dvct[i].info.dist += dist_to_sender;
-				dvct[i].via  = via_net;
+				dvct[i].via        = via_net;
+				dvct[i].inf_cntr   = INF_LIFETM;
 			}
-
 			return;
 		}
 	}
@@ -31,5 +34,6 @@ void update(neigh_info msg, struct in_addr via_net) {
 	new_neigh.directly  = false;
 	new_neigh.reachable = true;
 	new_neigh.via       = via_net;
+	new_neigh.inf_cntr  = INF_LIFETM;
 	dvct.push_back(new_neigh);
 }
