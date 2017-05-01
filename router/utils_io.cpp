@@ -14,6 +14,7 @@ void readConfig() {
 		ne.info.dist  = dist;
 		ne.directly   = ne.reachable = true;
 		ne.inf_cntr   = INF_LIFETM;
+		ne.via.s_addr = 0;
 		dvct.push_back( ne );
 		neigh_nets.push_back( {getIp(cidr), getMaskLen(cidr), dist} );
 		neigh_nets_cutdown.push_back( NEIGH_LIFETM );
@@ -47,30 +48,25 @@ void chechUnreachability() {
 
 	// Decrement lifetime cutdown
 	for(size_t i=0; i<neigh_nets_cutdown.size(); i++){
-		//printf("%s -- %d   left\n", inet_ntoa(dvct[i].info.ip), neigh_nets_cutdown[i]);
 		if( neigh_nets_cutdown[i]-- <= 0) {
 			dvct[i].reachable = false;
 			// Search the vector for connections through unreachable net
 			struct in_addr unrchbl_net = getNetAddress(dvct[i].info.ip, dvct[i].info.m_len);
-			//printf("%s jest nieosiagalna!! kolejne via: \n", inet_ntoa(unrchbl_net) );
 			for(size_t j=0; j<dvct.size(); j++) {
-				//printf("> %s\n", inet_ntoa(  getNetAddress(dvct[j].via, dvct[j].info.m_len) )) ;
 				if( unrchbl_net.s_addr == getNetAddress(dvct[j].via, dvct[j].info.m_len).s_addr  ) {
 					dvct[j].info.dist = INF;
-					//printf("bang\n");
 				}
-			}
+			}	
 		}
-		else {
-			dvct[i].reachable = true;
-		}
+		//else {
+		//	dvct[i].reachable = true;
+		//	}
 	}
 
 	// deal with infinities
 	for(size_t i=0; i<dvct.size(); i++) {
 		if(dvct[i].directly == false && dvct[i].info.dist == INF) {
 			if( dvct[i].inf_cntr-- <=0 ) {
-				//printf("remove entry!!1\n");
 				dvct.erase(dvct.begin()+i);
 				i--;
 			}

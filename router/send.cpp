@@ -6,7 +6,6 @@ void send() {
 	for(size_t i=0; i<dvct.size(); i++) {
 		for(size_t j=0; j<neigh_nets.size(); j++) {
 			if( Sendto(i, j) == false ) {
-				//printf("ops, sth went wrong\n");
 				dvct[j].reachable = false;
 			}
 		}

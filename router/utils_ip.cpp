@@ -38,3 +38,11 @@ struct in_addr getNetAddress(struct in_addr ip, char mask_len) {
 	net_addr.s_addr =  ip.s_addr & mask;
 	return net_addr;
 }
+
+bool isNetReachable(struct in_addr ip, char m_len) {
+	for(size_t i=0; i<dvct.size(); i++) {
+		if( getNetAddress(ip, m_len).s_addr == getNetAddress(dvct[i].info.ip, dvct[i].info.m_len).s_addr)
+			return dvct[i].reachable;
+	}
+	return false;
+}

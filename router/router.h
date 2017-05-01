@@ -13,12 +13,12 @@
 #include <netinet/ip.h>
 #include <errno.h>
 
-#define ROUND_LEN 10     // [sec]
+#define ROUND_LEN 10    // [sec]
 #define INF 4294967295U // 2^32 - 1
 #define PORT 54321
-#define NEIGH_LIFETM 2  // [#rounds]. Tells how long should I display info
+#define NEIGH_LIFETM 3  // [#rounds]. Tells how long should I display info
                         // about neighbours that are not responding
-#define INF_LIFETM 2    // [#rounds]
+#define INF_LIFETM 3    // [#rounds]
 
                         // All data but IPs are stored in host byte order
 #pragma pack(1)         // Data to be sent/received
@@ -58,6 +58,8 @@ void chechUnreachability();
 struct in_addr getIp(char cidr[]);
 struct in_addr getBroadcast(struct in_addr ip, char mask_len);
 struct in_addr getNetAddress(struct in_addr ip, char mask_len);
+bool isNetReachable(struct in_addr ip, char m_len);
+
 char getMaskLen(char cidr[]);
 
 // send.h
