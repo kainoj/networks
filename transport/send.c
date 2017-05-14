@@ -21,5 +21,4 @@ void send_request(int segment_number, char *datagram_len_str) {
 
   ssize_t message_len = strlen(message);
   Sendto(sockfd_send, message, message_len, 0, (struct sockaddr*) &server_address_send, sizeof(server_address_send));
-
 }

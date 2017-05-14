@@ -4,19 +4,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <errno.h>
 #include <unistd.h>
 #include <stdbool.h>
 
-#include <strings.h>
+#include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
+#include <netinet/ip.h>
 
 #define ERROR(str) { fprintf(stderr, "%s: %s\n", str, strerror(errno)); exit(1); }
 
 #define DATAGRAM_LEN 1000 // [bytes], an arbitraty value from 1 to 1000
 #define WIN_SIZE 100
+#define TIMEOUT_SEC 7 // [seconds]
+#define TIMEOUT_USEC 500000 // [microseconds]
 
 int Port;
 char FileName[50];
@@ -36,11 +39,10 @@ typedef struct Window {
 } Window;
 
 extern Window window[WIN_SIZE];
-int sockfd;
-
 
 void init_socket_send(int port);
 void send_request(int segment_number, char *datagram_len_str);
+bool receive();
 
 void init_socket_recv(int port);
 void init_socket_recv(int port);

@@ -19,7 +19,10 @@ int main(int argc, char *argv[]) {
   int n = TotalDataSize / DATAGRAM_LEN;
   for(int i=0; i < n; i++) {
     printf("> %.2f%%\n", 100.0*i/n );
-    send_request(i, datagram_len_str);
+    do {
+      printf("wysylam\n");
+      send_request(i, datagram_len_str);
+    } while( receive() == false );
   }
   return 0;
 }
