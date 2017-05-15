@@ -18,16 +18,28 @@ int main(int argc, char *argv[]) {
   char response_msg[60];
 
   int n = TotalDataSize / DATAGRAM_LEN;
-  for(int i=0; i < n; i++) {
-    printf("> %.2f%%\n", 100.0*i/n );
+  int i;
+  for(i=0; i < n; i++) {
+    printf("%.2f%% done\n", 100.0*i/n );
     sprintf(request_msg,   "GET %d %d\n", i*DATAGRAM_LEN, DATAGRAM_LEN);
     sprintf(response_msg, "DATA %d %d\n", i*DATAGRAM_LEN, DATAGRAM_LEN);
 
     do {
-      printf(".");
       send_request(request_msg);
-    } while( receive(response_msg) == false );
+      send_request(request_msg);
+    } while( receive(response_msg, DATAGRAM_LEN) == false );
   }
+
+  // If file length is not divisible by DATAGRAM_LEN:
+  int left_datagram_len = TotalDataSize % DATAGRAM_LEN;
+  if( left_datagram_len ) {
+    sprintf(request_msg,   "GET %d %d\n", i*DATAGRAM_LEN, left_datagram_len);
+    sprintf(response_msg, "DATA %d %d\n", i*DATAGRAM_LEN, left_datagram_len);
+    do {
+      send_request(request_msg);
+    } while( receive(response_msg, left_datagram_len) == false );
+  }
+  printf("100.00%% DONE!\n");
   fclose(pFile);
   return 0;
 }

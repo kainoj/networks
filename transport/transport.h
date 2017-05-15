@@ -18,32 +18,19 @@
 #define DATAGRAM_LEN 1000 // [bytes], an arbitraty value from 1 to 1000
 #define WIN_SIZE 100
 #define TIMEOUT_SEC 0 // [seconds]
-#define TIMEOUT_USEC 300000 // [microseconds]
+#define TIMEOUT_USEC 100000 // [microseconds]
 
-int Port;
+int  Port;
 char FileName[50];
-int TotalDataSize; // #bytes to be downloaded
+int  TotalDataSize; // #bytes to be downloaded
 extern const char *SERVER_IP;
 
 int sockfd;
 struct sockaddr_in server_address;
 FILE * pFile;
 
-typedef struct Window {
-  int start;
-  int length;
-  bool received;
-  char data[DATAGRAM_LEN];
-} Window;
-
-extern Window window[WIN_SIZE];
-
 void init_socket(int port);
 void send_request(char *request_msg);
-bool receive(char *response_msg);
-
-
-
-
+bool receive(char *response_msg, int datagram_len);
 
 #endif

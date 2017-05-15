@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-std=c99 -Wall -Wextra
 
-CSRC=transport.c utils.c wrappers.c window.c send.c receive.c
+CSRC=transport.c wrappers.c send.c receive.c
 
 COBJ=$(CSRC:.c=.o)
 

@@ -1,7 +1,7 @@
 #include "transport.h"
 #include "wrappers.h"
 
-bool receive(char *response_msg) {
+bool receive(char *response_msg, int datagram_len) {
   bool received = false;
   int ready=0;
   struct sockaddr_in 	sender;
@@ -26,16 +26,13 @@ bool receive(char *response_msg) {
         //printf("msg2:\t >%s<", response_hdr);
         response_hdr[response_msg_len] = '\0';
         if( !strcmp(response_hdr, response_msg)) {
-          printf("\nwitre: %sdata len: %d\n", response_hdr, sizeof(buffer)-response_msg_len);
-          fwrite(buffer+response_msg_len, sizeof(char), DATAGRAM_LEN, pFile);
+          fwrite(buffer+response_msg_len, sizeof(char), datagram_len, pFile);
           received = true;
         }
       }
-      char sender_ip_str[20];
-  		inet_ntop(AF_INET, &(sender.sin_addr), sender_ip_str, sizeof(sender_ip_str));
-  		printf ("Received UDP packet from IP address: %s, port: %d\n", sender_ip_str, ntohs(sender.sin_port));
-    //  printf("DATA:\n%s\n=======", buffer);
-
+    //  char sender_ip_str[20];
+  	// 	inet_ntop(AF_INET, &(sender.sin_addr), sender_ip_str, sizeof(sender_ip_str));
+  	//	printf ("Received UDP packet from IP address: %s, port: %d\n", sender_ip_str, ntohs(sender.sin_port));
     }
   } while(received == false && (tv.tv_sec != 0 || tv.tv_usec != 0));
 
