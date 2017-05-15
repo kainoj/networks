@@ -1,3 +1,5 @@
+// Przemysław Joniak 282751
+
 #include <stdio.h>
 #include <string.h>
 #include <arpa/inet.h>
@@ -31,11 +33,21 @@ int Select(int fds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct
     return n;
 }
 
-//man recvfrom: 
-//      recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t *addrlen);
 ssize_t Recvfrom(int fd, char *ptr, size_t nbytes, int flags, struct sockaddr *sender, socklen_t *sender_len) {
 	int n = recvfrom (fd, ptr, nbytes, flags, sender, sender_len);
 	if(n < 0) ERROR ("recv() error");
 	ptr[n] = 0;
 	return n;
+}
+
+size_t FWrite(void *ptr, size_t size, size_t nmemb, FILE *stream) {
+	size_t s = fwrite(ptr, size, nmemb, stream);
+	if( s != nmemb) ERROR("write() error");
+	return s;
+}
+
+FILE *FOpen(char *path,  char *mode) {
+	FILE *fout = fopen(path, mode);
+	if( fout == NULL) ERROR("fopen() error");
+	return fout;
 }

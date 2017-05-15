@@ -1,3 +1,5 @@
+// Przemysław Joniak 282751
+
 #include "transport.h"
 #include "wrappers.h"
 
@@ -22,11 +24,10 @@ bool receive(char *response_msg, int datagram_len) {
         char response_hdr[60];
         size_t response_msg_len = strlen(response_msg);
         memcpy(response_hdr, buffer, response_msg_len);
-        //printf("msg1:\t >%s<", response_msg);
-        //printf("msg2:\t >%s<", response_hdr);
         response_hdr[response_msg_len] = '\0';
+        
         if( !strcmp(response_hdr, response_msg)) {
-          fwrite(buffer+response_msg_len, sizeof(char), datagram_len, pFile);
+          FWrite(buffer+response_msg_len, sizeof(char), datagram_len, pFile);
           received = true;
         }
       }

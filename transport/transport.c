@@ -1,3 +1,5 @@
+// Przemysław Joniak 282751
+
 #include "transport.h"
 #include "wrappers.h"
 
@@ -9,16 +11,13 @@ int main(int argc, char *argv[]) {
   Port = atoi(argv[1]);
   strcpy(FileName, argv[2]);
   TotalDataSize = atoi(argv[3]);
-
-  pFile = fopen(FileName, "wb");
-
-  init_socket(Port);
-
+  pFile = FOpen(FileName, "wb");
   char request_msg[60];
   char response_msg[60];
 
-  int n = TotalDataSize / DATAGRAM_LEN;
-  int i;
+  init_socket(Port);
+  int i, n = TotalDataSize / DATAGRAM_LEN;
+
   for(i=0; i < n; i++) {
     printf("%.2f%% done\n", 100.0*i/n );
     sprintf(request_msg,   "GET %d %d\n", i*DATAGRAM_LEN, DATAGRAM_LEN);
