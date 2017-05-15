@@ -16,4 +16,4 @@ clean:
 
 distclean:
 	rm -f *.o
-	rm -f traceroute
+	rm -f transport

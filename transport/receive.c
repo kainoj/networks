@@ -1,43 +1,43 @@
 #include "transport.h"
 #include "wrappers.h"
 
-void init_socket_recv(int port) {
-  sockfd_recv = socket(AF_INET, SOCK_DGRAM, 0);
-	bzero (&server_address_recv, sizeof(server_address_recv));
-	server_address_recv.sin_family      = AF_INET;
-	server_address_recv.sin_port        = htons(port);
-	server_address_recv.sin_addr.s_addr = htonl(INADDR_ANY);
-  bind(sockfd_recv, (struct sockaddr*)&server_address_recv, sizeof(server_address_recv));
-}
-
-bool receive() {
-
+bool receive(char *response_msg) {
   bool received = false;
-
-  struct sockaddr_in sender;
-  socklen_t          sender_len = sizeof(sender);
-  char               buffer[IP_MAXPACKET+1];
+  int ready=0;
+  struct sockaddr_in 	sender;
+  socklen_t 			sender_len = sizeof(sender);
+  char 			      buffer[IP_MAXPACKET+1];
 
   fd_set descriptors;
 	FD_ZERO (&descriptors);
-	FD_SET (sockfd_recv, &descriptors);
-  struct timeval tv = {TIMEOUT_SEC, TIMEOUT_USEC};
+	FD_SET (sockfd, &descriptors);
+	struct timeval tv = { TIMEOUT_SEC, TIMEOUT_USEC };
 
-  ssize_t datagram_len;
-	char sender_ip_str[20];
   do {
-    int ready = select(sockfd_recv+1, &descriptors, NULL, NULL, &tv);
-    printf("ready = %d\n", ready);
-
+    ready = Select(sockfd+1, &descriptors, NULL, NULL, &tv);
     if(ready>0) {
-      datagram_len = recvfrom(sockfd_recv, buffer, IP_MAXPACKET, 0, (struct sockaddr*)&sender, &sender_len);
-    	inet_ntop(AF_INET, &(sender.sin_addr), sender_ip_str, sizeof(sender_ip_str));
-  		printf ("Received UDP packet from IP address: %s, port: %d\n", sender_ip_str, ntohs(sender.sin_port));
-  		printf ("%ld-byte message: +%s+\n", datagram_len, buffer);
-      received = true;
-    }
+      Recvfrom(sockfd, buffer, IP_MAXPACKET, 0, (struct sockaddr*)&sender, &sender_len);
 
-  }
-  while((tv.tv_sec != 0 || tv.tv_usec != 0) && received);
+      if(server_address.sin_port == sender.sin_port && server_address.sin_addr.s_addr == sender.sin_addr.s_addr) {
+        char response_hdr[60];
+        size_t response_msg_len = strlen(response_msg);
+        memcpy(response_hdr, buffer, response_msg_len);
+        //printf("msg1:\t >%s<", response_msg);
+        //printf("msg2:\t >%s<", response_hdr);
+        response_hdr[response_msg_len] = '\0';
+        if( !strcmp(response_hdr, response_msg)) {
+          printf("\nwitre: %sdata len: %d\n", response_hdr, sizeof(buffer)-response_msg_len);
+          fwrite(buffer+response_msg_len, sizeof(char), DATAGRAM_LEN, pFile);
+          received = true;
+        }
+      }
+      char sender_ip_str[20];
+  		inet_ntop(AF_INET, &(sender.sin_addr), sender_ip_str, sizeof(sender_ip_str));
+  		printf ("Received UDP packet from IP address: %s, port: %d\n", sender_ip_str, ntohs(sender.sin_port));
+    //  printf("DATA:\n%s\n=======", buffer);
+
+    }
+  } while(received == false && (tv.tv_sec != 0 || tv.tv_usec != 0));
+
   return received;
 }
