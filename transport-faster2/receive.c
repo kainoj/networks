@@ -3,7 +3,7 @@
 #include "transport.h"
 #include "wrappers.h"
 
-bool receive(char *response_msg, int datagram_len) {
+bool receive() {
   bool received = false;
   int ready=0;
   struct sockaddr_in 	sender;
@@ -14,7 +14,7 @@ bool receive(char *response_msg, int datagram_len) {
 	FD_ZERO (&descriptors);
 	FD_SET (sockfd, &descriptors);
 	struct timeval tv = { TIMEOUT_SEC, TIMEOUT_USEC };
-  
+
   do {
     ready = Select(sockfd+1, &descriptors, NULL, NULL, &tv);
     if(ready>0) {
@@ -24,6 +24,7 @@ bool receive(char *response_msg, int datagram_len) {
         char response_hdr[60];
         int start_byte_recv, datagram_len_recv;
 
+        char response_msg[60];
         sscanf(buffer, "%*s %d %d", &start_byte_recv, &datagram_len_recv);
         sprintf(response_msg, "DATA %d %d\n", start_byte_recv, datagram_len_recv);
 
@@ -31,9 +32,7 @@ bool receive(char *response_msg, int datagram_len) {
         memcpy(response_hdr, buffer, response_msg_len);
         response_hdr[response_msg_len] = '\0';
 
-
-
-        storeDatagram(start_byte_recv, datagram_len_recv, buffer+response_msg_len);
+        storeDatagram(start_byte_recv, buffer+response_msg_len);
       }
     }
   } while(tv.tv_sec != 0 || tv.tv_usec != 0);

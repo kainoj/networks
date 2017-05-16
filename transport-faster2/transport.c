@@ -32,23 +32,46 @@ int main(int argc, char *argv[]) {
     sprintf(response_msg, "DATA %d %d\n", i*DATAGRAM_LEN, DATAGRAM_LEN);
     slideWindow(i*WIN_SIZE*DATAGRAM_LEN);
     do {
-      send_request(i*WIN_SIZE*DATAGRAM_LEN, DATAGRAM_LEN, WIN_SIZE);
-      receive(response_msg, DATAGRAM_LEN);
+      send_request( WIN_SIZE);
+      receive();
     } while( rcvd < WIN_SIZE );
     winToFile(WIN_SIZE);
   }
 
-  // If file length is not divisible by DATAGRAM_LEN:
-/*  int left_datagram_len = TotalDataSize % DATAGRAM_LEN;
-  if( left_datagram_len ) {
-    sprintf(request_msg,   "GET %d %d\n", i*DATAGRAM_LEN, left_datagram_len);
-    sprintf(response_msg, "DATA %d %d\n", i*DATAGRAM_LEN, left_datagram_len);
-    do {
-      //send_request(request_msg);
-    } while( receive(response_msg, left_datagram_len) == false );
+  // window crumb
+  int last_byte = i*DATAGRAM_LEN*WIN_SIZE;
+  int left_bytes = TotalDataSize - last_byte;
+  int left_datagrams = left_bytes/DATAGRAM_LEN;
+  for(int j=0; j<WIN_SIZE; j++) {
+    window[j].received = true;
+    strcpy(window[j].data, "");
   }
-  printf("100.00%% DONE!\n");
-  */
+
+  printf("pozostalo %d Bajtow \ndo podzialu na %d datagramow dl DATAGRAM_LEN\n", left_bytes, left_datagrams);
+  printf("ostatni pakiet ma dl: %d\n", left_bytes % DATAGRAM_LEN);
+
+  for(i=0; i<left_datagrams; i++) {
+    window[i].received = false;
+    window[i].start_byte = last_byte+i*DATAGRAM_LEN;
+    window[i].data_length = DATAGRAM_LEN;
+  }
+  if( left_bytes% DATAGRAM_LEN ) {
+    printf("zostal 1!!!!!\n" );
+    window[i].received = false;
+    window[i].start_byte = last_byte+i*DATAGRAM_LEN;
+    window[i].data_length = left_bytes % DATAGRAM_LEN;
+    left_datagrams++;
+  }
+  rcvd = 0;
+  printf("left_datagrams = %d\n", left_datagrams );
+  if(left_datagrams){
+    do {
+      send_request(left_datagrams);
+      receive();
+    } while(rcvd < left_datagrams);
+    winToFile(left_datagrams);
+  }
+
   fclose(pFile);
   return 0;
 }

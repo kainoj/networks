@@ -11,12 +11,13 @@ void init_socket(int port) {
 	inet_pton(AF_INET, SERVER_IP, &server_address.sin_addr);
 }
 
-void send_request(int start_byte, int datagram_len, int win_size) {
+void send_request(int win_size) {
   char request_msg[60];
 
   for(int i=0; i<win_size; i++) {
     if(window[i].received == false) {
-      sprintf(request_msg,   "GET %d %d\n", start_byte+i*datagram_len, DATAGRAM_LEN);
+      //sprintf(request_msg,   "GET %d %d\n", start_byte+i*datagram_len, DATAGRAM_LEN);
+      sprintf(request_msg,   "GET %d %d\n", window[i].start_byte, window[i].data_length);
       Sendto(sockfd, request_msg, strlen(request_msg), 0, (struct sockaddr*) &server_address, sizeof(server_address));
     }
   }

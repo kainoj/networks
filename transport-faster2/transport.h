@@ -16,7 +16,7 @@
 #define ERROR(str) { fprintf(stderr, "%s: %s\n", str, strerror(errno)); exit(1); }
 
 #define DATAGRAM_LEN 1000 // [bytes], an arbitraty value from 1 to 1000
-#define WIN_SIZE 10
+#define WIN_SIZE 100
 #define TIMEOUT_SEC 0 // [seconds]
 #define TIMEOUT_USEC 10000 // [microseconds]
 
@@ -41,11 +41,11 @@ struct sockaddr_in server_address;
 FILE * pFile;
 
 void init_socket(int port);
-void send_request(int start_byte, int datagram_len, int win_size);
-bool receive(char *response_msg, int datagram_len);
+void send_request(int win_size);
+bool receive();
 
 void slideWindow(int start_win_byte);
-void storeDatagram(int start_byte, int data_len, char *buffer);
+void storeDatagram(int start_byte, char *buffer);
 void winToFile(int win_size);
 
 #endif
