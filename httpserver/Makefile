@@ -1,11 +1,11 @@
 CC=g++
 CFLAGS=-std=c++11 -Wall -Wextra
 
-CSRC=httpserver.cpp wrappers.cpp  httpHeader.cpp
+CSRC=httpserver.cpp wrappers.cpp  httpHeader.cpp utils.cpp
 
 COBJ=$(CSRC:.cpp=.o)
 
-httpserver: $(COBJ) httpserver.h
+httpserver: $(COBJ) httpserver.h httpHeader.h
 	$(CC) $(CFLAGS) $? -o $@
 
 $(COBJ): $(CSRC) httpserver.h

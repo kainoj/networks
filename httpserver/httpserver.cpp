@@ -11,11 +11,11 @@ char buffer[BUFFSIZE+1];
 
 
 int main(int argc, char *argv[]) {
-  if(argc != 3) ERROR("Usage: ./httpserver port directory");
+  if(argc != 3 || !dirExists(argv[2]) ) ERROR("Usage: ./httpserver port directory");
 
-  PORT = atoi(argv[1]);
-  DIR  = argv[2];
-  std::cout << "Listening on port: " << PORT << ". Direcotry: " << DIR << "\n";
+  int PORT = atoi(argv[1]);
+  std::string dir  = argv[2];
+  std::cout << "Listening on port: " << PORT << ". Direcotry: " << dir << "\n";
 
   int sockfd = Socket(AF_INET, SOCK_STREAM, 0);
 	struct sockaddr_in server_address;
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 		int msglen = n;// < 20 ? n : 20;
 		buffer[msglen] = 0;
 
-    httpHeader hdr(buffer);
+    httpHeader hdr(buffer, dir);
 
     //char reply_msg[1000];
   //  std::string qqq = buffer;
