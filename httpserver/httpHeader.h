@@ -19,6 +19,10 @@ class httpHeader {
   std::string filesDir;
   std::string pageDir;
   std::string response;
+  std::string responseBody;
+
+  std::string filePath;
+  char *fileContent;
 
   public:
     httpHeader(char *buff, std::string dir);
@@ -33,7 +37,9 @@ class httpHeader {
     std::string getContentType();
     std::size_t getStatusCode();
     std::string getErrorMsg();
+    size_t readFileContent();
 
+  const std::string DefaultFile = "/index.html";
   const std::map<int, std::string> statusCodes {
     {200, "200 OK"},
     {301, "301 Moved Permanently"},
