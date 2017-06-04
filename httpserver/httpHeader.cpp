@@ -6,52 +6,29 @@
 
 httpHeader::httpHeader(std::string header, std::string dir) {
   filesDir = dir;
-
   parseHttpRequest(header);
   content_type = getContentType();
   status = getStatusCode();
   composeResponse();
-  printInfo();
+//  printInfo();
 }
 
-httpHeader::httpHeader(char *buff, std::string dir) {
-  httpHeader(std::string(buff), dir);
-}
-
-
-void httpHeader::composeResponse() {
-  response = "HTTP/1.1 " + statusCodes.at(status) + "\r\n";
-  response+= "Server: kainoj2k17\r\n";
-  switch(status) {
-    case 200:
-      response += "Content-Type: " + getContentType() + "\r\n";
-      response += "Content-Length: " + std::to_string(readFileContent()) + "\r\n\r\n";
-      response += fileContent; free(fileContent);
-      break;
-    case 301:
-      response += "Location: http://" + host + DefaultFile;
-      break;
-    default:
-      responseBody = getErrorMsg();
-      response += "Content-Type: text/html\r\n";
-      response += "Content-Length: " + std::to_string(sizeof(responseBody)) + "\r\n\r\n";
-      response += responseBody;
-    break;
-  }
-  response += "\r\n\r\n";
-}
-
+httpHeader::httpHeader(char *buff, std::string dir):
+  httpHeader(std::string(buff), dir)
+  {}
 
 std::string httpHeader::getNextWord(std::string str, std::size_t fstWordPos, std::size_t wordLen) {
   std::size_t i = 1;
-  while(str[fstWordPos+wordLen+i] != ' ' && str[fstWordPos+wordLen+i] != '\n') i++;
+  while(str[fstWordPos+wordLen+i] != ' ' && str[fstWordPos+wordLen+i] != '\r') i++;
   // line in http header is terminated with '\r\n'
-  if(str[fstWordPos+wordLen+i-1] == '\r') i--;
+  //if(str[fstWordPos+wordLen+i-1] == '\r') i--;
+  //std::cout << "1.5 ";
   return std::string(str, fstWordPos+wordLen+1, i-1);;
 }
 
 
 void httpHeader::parseHttpRequest(std::string header) {
+
   std::size_t pos;
   method = getNextWord(header, -1, 0); // returns first word in a string
 
@@ -68,11 +45,17 @@ void httpHeader::parseHttpRequest(std::string header) {
   pageDir = (pos == std::string::npos)  ? host : std::string(host, 0, pos );
 
   filePath = filesDir+"/"+pageDir + resource;
+  std::cout << "host = " << host <<  "\nfilesDir = " << filesDir << "\n"<< "pageDir = " << pageDir << "\nresource: " << resource << "\n";
+  std::cout << "fPath = " << filePath << "\n";
 }
 
 
-std::string httpHeader::getResponse() const {
+char* httpHeader::getResponse() const {
   return response;
+}
+
+std::size_t httpHeader::getResponseLen() const {
+  return responseLen;
 }
 
 
@@ -88,8 +71,8 @@ std::string httpHeader::getContentType() {
 
 std::size_t httpHeader::getStatusCode() {
   if( method != "GET") return 501;
-  if( resource == "/" || resource == "" ) return 301;
-  if( resource.find("../") != std::string::npos )   return 403;
+  if( resource.find("../") != std::string::npos )  return 403;
+  if( resource == "/" || resource == "" || resource.find(".") == std::string::npos  ) return 301;
   if( fileExists(filePath) ) return 200;
     else return 404;
   return 500;
@@ -102,7 +85,7 @@ std::string httpHeader::getErrorMsg() {
 }
 
 
-size_t httpHeader::readFileContent() {
+std::size_t httpHeader::readFileContent() {
 // http://www.cplusplus.com/reference/cstdio/fread/
 
   FILE * pFile;
@@ -116,10 +99,8 @@ size_t httpHeader::readFileContent() {
   fseek (pFile , 0 , SEEK_END);
   lSize = ftell (pFile);
   rewind (pFile);
-
-  // allocate memory to contain the whole file:
   fileContent = (char*) malloc (sizeof(char)*lSize);
-  if (fileContent == NULL) ERROR("open file: memory error");
+  if (fileContent == NULL) ERROR("open file: malloc error");
 
   // copy the file into the fileContent:
   result = fread (fileContent,1,lSize,pFile);
@@ -139,10 +120,10 @@ void httpHeader::printInfo() {
   std::cout << "Host:   \t"    << host       << "\n";
   std::cout << "Connection:\t" << connection << "\n";
   std::cout << "Content type:\t"<< content_type << "\n";
-  std::cout << "Files dir:  \t" << filesDir  << "\n";
-  std::cout << "Page dir:   \t" << pageDir   << "\n";
-  std::cout << "Status code:\t" << status    << "\n";
   std::cout << "File path: \t"  << filePath  << "\n";
-  std::cout << "\nResponse: \n" << response  << "\n";
-  std::cout << "---------------------------" << "\n";
+  std::cout << "Status code:\t" << status    << "\n";
+  // std::cout << "Files dir:  \t" << filesDir  << "\n";
+  // std::cout << "Page dir:   \t" << pageDir   << "\n";
+  // std::cout << "\nResponse: \n" << response  << "\n";
+  std::cout << "---------------------------\n\n";
 }

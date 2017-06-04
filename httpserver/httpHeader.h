@@ -13,31 +13,37 @@ class httpHeader {
   std::string connection;
   std::size_t status;
   std::string content_type;
-  std::size_t content_length;
 
   std::string resource;
   std::string filesDir;
   std::string pageDir;
-  std::string response;
-  std::string responseBody;
-
   std::string filePath;
-  char *fileContent;
+  std::string responseStr;
+  char *response;
+  char *fileContent; // response := response + fileContent + "\r\n"
+  std::size_t responseLen; // in Bytes
 
   public:
     httpHeader(char *buff, std::string dir);
     httpHeader(std::string header, std::string dir);
-    std::string getResponse() const;
+    //httpHeader(const httpHeader &header) = default;
+    //httpHeader& operator=(const httpHeader &header) = default;
+  //  ~httpHeader() { if(response) delete response; };
+    char *getResponse() const;
+    std::size_t getResponseLen() const;
     void printInfo();
 
   private:
     std::string getNextWord(std::string str, std::size_t fstWordPos, std::size_t wordLen);
     void parseHttpRequest(std::string header);
     void composeResponse();
+    void composeResponse200();
+    void composeResponse300();
+    void composeResponse400(); // >400
     std::string getContentType();
     std::size_t getStatusCode();
     std::string getErrorMsg();
-    size_t readFileContent();
+    std::size_t readFileContent();
 
   const std::string DefaultFile = "/index.html";
   const std::map<int, std::string> statusCodes {

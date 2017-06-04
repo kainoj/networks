@@ -31,23 +31,17 @@ int main(int argc, char *argv[]) {
 		int conn_sockfd = Accept (sockfd, NULL, NULL);
 
 		int n = Recv(conn_sockfd, buffer, BUFFSIZE, 0);
-		int msglen = n;// < 20 ? n : 20;
-		buffer[msglen] = 0;
+    if( n > 0 ) {
+  		buffer[n] = 0;
 
-    httpHeader hdr(buffer, dir);
+      //printf("Received header: %s\n---------------\n", buffer );
 
-    //char reply_msg[1000];
-  //  std::string qqq = buffer;
-  //  std::cout << "msg: (" << qqq << ")\n";
+      httpHeader hdr(buffer, dir);
+      hdr.printInfo();
 
-
-	//	sprintf (reply_msg, "%d bytes read, first 20 bytes: ->%s<-", n, buffer);
-	//	printf ("%d bytes read\nmsg:\n%s\n-----------------\n", n, buffer);
-
-		// Wysylanie odpowiedzi
-		// send(_,_,_,0) = write(_,_,_). Przy UDP bylo sendto, przy TCP jest send().
-//		Send (conn_sockfd, reply_msg, strlen(reply_msg), 0);
-
+  		// Wysylanie odpowiedzi
+  		Send (conn_sockfd, (char *)hdr.getResponse(), hdr.getResponseLen(), 0);
+      }
 		Close (conn_sockfd);
 	}
 
