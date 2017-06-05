@@ -19,8 +19,7 @@ void Connect(int fd, const struct sockaddr_in *sa, socklen_t salen) {
 		ERROR ("connect error");
 }
 
-int Accept(int fd, struct sockaddr_in *sa, socklen_t *salenptr)
-{
+int Accept(int fd, struct sockaddr_in *sa, socklen_t *salenptr) {
 	int n = accept(fd, (struct sockaddr*)sa, salenptr);
     if ( n < 0) ERROR ("accept error");
     return n;

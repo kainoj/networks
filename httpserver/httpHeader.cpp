@@ -44,8 +44,8 @@ void httpHeader::parseHttpRequest(std::string header) {
 
   filePath = filesDir+"/"+pageDir + resource;
 
-  std::cout << "host = " << host <<  "\nfilesDir = " << filesDir << "\n"<< "pageDir = " << pageDir << "\nresource: " << resource << "\n";
-  std::cout << "fPath = " << filePath << "\n";
+  // std::cout << "host = " << host <<  "\nfilesDir = " << filesDir << "\n"<< "pageDir = " << pageDir << "\nresource: " << resource << "\n";
+  // std::cout << "fPath = " << filePath << "\n";
 }
 
 
@@ -57,6 +57,9 @@ std::size_t httpHeader::getResponseLen() const {
   return responseLen;
 }
 
+bool httpHeader::isConnectionClosed() const {
+  return connection == "Closed";
+}
 
 std::string httpHeader::getContentType() {
   int dotPos=resource.length()-1;
@@ -125,4 +128,10 @@ void httpHeader::printInfo() {
   // std::cout << "Page dir:   \t" << pageDir   << "\n";
   // std::cout << "\nResponse: \n" << response  << "\n";
   std::cout << "---------------------------\n\n";
+}
+
+void httpHeader::printBriefInfo() {
+  std::cout << method << " " << resource << "\n";
+  std::cout << "Connection: " << connection << '\n';
+  std::cout << "Status: " << status << "\n\n";
 }

@@ -31,7 +31,9 @@ class httpHeader {
   //  ~httpHeader() { if(response) delete response; };
     char *getResponse() const;
     std::size_t getResponseLen() const;
+    bool isConnectionClosed() const;
     void printInfo();
+    void printBriefInfo();
 
   private:
     std::string getNextWord(std::string str, std::size_t fstWordPos, std::size_t wordLen);
