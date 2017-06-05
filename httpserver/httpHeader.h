@@ -4,9 +4,12 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <sys/stat.h>
+#include <errno.h>
+#include <string.h>
 
 #define FIND(pos, str, what)  if( ((pos) = (str).find(what)) == std::string::npos ) ERROR("error while parsing string");
-
+#define ERROR(str) { fprintf(stderr, "Header: %s: %s\n", (str), strerror(errno)); exit(1); }
 class httpHeader {
   std::string method;
   std::string host;
@@ -34,6 +37,8 @@ class httpHeader {
     bool isConnectionClosed() const;
     void printInfo();
     void printBriefInfo();
+    bool dirExists(std::string dir);
+    bool fileExists(const std::string& name);
 
   private:
     std::string getNextWord(std::string str, std::size_t fstWordPos, std::size_t wordLen);

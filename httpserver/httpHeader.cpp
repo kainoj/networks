@@ -1,8 +1,6 @@
 // Przemysław Joniak, 282751
 
 #include "httpHeader.h"
-#include "wrappers.h"
-#include "httpserver.h"
 
 httpHeader::httpHeader(std::string header, std::string dir) {
   filesDir = dir;
@@ -134,4 +132,15 @@ void httpHeader::printBriefInfo() {
   std::cout << method << " " << resource << "\n";
   std::cout << "Connection: " << connection << '\n';
   std::cout << "Status: " << status << "\n\n";
+}
+
+
+bool httpHeader::dirExists(const std::string dir) {
+  struct stat sb;
+  return (stat(dir.c_str(), &sb) == 0 && S_ISDIR(sb.st_mode));
+}
+
+bool httpHeader::fileExists(const std::string& name) {
+  struct stat buffer;
+  return (stat (name.c_str(), &buffer) == 0);
 }

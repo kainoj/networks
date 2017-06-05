@@ -1,8 +1,6 @@
 // Przemysław Joniak, 282751
 
 #include "httpHeader.h"
-#include "wrappers.h"
-#include "httpserver.h"
 
 void httpHeader::composeResponse400() {
   content_type = contentTypes.at("html");
