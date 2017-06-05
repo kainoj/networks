@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define ERROR(str) { fprintf(stderr, "%s\nStatus: %s\n", (str), strerror(errno)); exit(1); }
+#define ERROR(str) { fprintf(stderr, "%s: %s\n", (str), strerror(errno)); exit(1); }
 
 int Socket(int family, int type, int protocol);
 void Bind(int fd, const struct sockaddr_in *sa, socklen_t salen);

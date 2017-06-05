@@ -10,7 +10,6 @@ httpHeader::httpHeader(std::string header, std::string dir) {
   content_type = getContentType();
   status = getStatusCode();
   composeResponse();
-//  printInfo();
 }
 
 httpHeader::httpHeader(char *buff, std::string dir):
@@ -20,9 +19,6 @@ httpHeader::httpHeader(char *buff, std::string dir):
 std::string httpHeader::getNextWord(std::string str, std::size_t fstWordPos, std::size_t wordLen) {
   std::size_t i = 1;
   while(str[fstWordPos+wordLen+i] != ' ' && str[fstWordPos+wordLen+i] != '\r') i++;
-  // line in http header is terminated with '\r\n'
-  //if(str[fstWordPos+wordLen+i-1] == '\r') i--;
-  //std::cout << "1.5 ";
   return std::string(str, fstWordPos+wordLen+1, i-1);;
 }
 
@@ -32,19 +28,22 @@ void httpHeader::parseHttpRequest(std::string header) {
   std::size_t pos;
   method = getNextWord(header, -1, 0); // returns first word in a string
 
-  FIND(pos, header, method);
-  resource = getNextWord(header, pos, method.length());
+//   #define FIND(pos, str, what)  if( ((pos) = (str).find(what)) == std::string::npos ) ERROR("error while parsing string");
 
-  FIND(pos, header, "Host:");
-  host = getNextWord(header, pos, 5);
+  if( (pos = header.find(method)) != std::string::npos )
+    resource = getNextWord(header, pos, method.length());
 
-  FIND(pos, header, "Connection:");
-  connection = getNextWord(header, pos, 11);
+  if( (pos = header.find("Host: ")) != std::string::npos )
+    host = getNextWord(header, pos, 5);
+
+  if( (pos = header.find("Connection: ")) != std::string::npos)
+    connection = getNextWord(header, pos, 11);
 
   pos = host.find(":");
   pageDir = (pos == std::string::npos)  ? host : std::string(host, 0, pos );
 
   filePath = filesDir+"/"+pageDir + resource;
+
   std::cout << "host = " << host <<  "\nfilesDir = " << filesDir << "\n"<< "pageDir = " << pageDir << "\nresource: " << resource << "\n";
   std::cout << "fPath = " << filePath << "\n";
 }
@@ -72,7 +71,7 @@ std::string httpHeader::getContentType() {
 std::size_t httpHeader::getStatusCode() {
   if( method != "GET") return 501;
   if( resource.find("../") != std::string::npos )  return 403;
-  if( resource == "/" || resource == "" || resource.find(".") == std::string::npos  ) return 301;
+  if( resource == "/" || (resource.find(".") == std::string::npos && dirExists(filePath))  ) return 301;
   if( fileExists(filePath) ) return 200;
     else return 404;
   return 500;

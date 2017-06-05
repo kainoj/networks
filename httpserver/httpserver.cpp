@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     if( n > 0 ) {
   		buffer[n] = 0;
 
-      //printf("Received header: %s\n---------------\n", buffer );
+      printf("Received header: \n%s\n---------------\n", buffer );
 
       httpHeader hdr(buffer, dir);
       hdr.printInfo();

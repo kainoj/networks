@@ -24,7 +24,6 @@ void httpHeader::composeResponse300() {
     responseStr += "Location: http://" + host + DefaultFile;
   else
     responseStr += "Location: http://" + host + resource + DefaultFile;
-  std::cout << "#30X responseStr = " << responseStr << "\n--\n";
   responseStr += "\r\n\r\n";
 
   responseLen = responseStr.length()*sizeof(char);
