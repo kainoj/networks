@@ -16,7 +16,7 @@
 #define ERROR(str) { fprintf(stderr, "%s: %s\n", str, strerror(errno)); exit(1); }
 
 #define DATAGRAM_LEN 1000 // [bytes], an arbitraty value from 1 to 1000
-#define WIN_SIZE 100
+#define WIN_SIZE 500
 #define TIMEOUT_SEC 0 // [seconds]
 #define TIMEOUT_USEC 10000 // [microseconds]
 
@@ -47,5 +47,6 @@ bool receive();
 void slideWindow(int start_win_byte);
 void storeDatagram(int start_byte, char *buffer);
 void winToFile(int win_size);
+int winCrumbs(int last_byte, int left_bytes, int left_datagrams);
 
 #endif
